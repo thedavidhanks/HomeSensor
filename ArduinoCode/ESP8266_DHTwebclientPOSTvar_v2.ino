@@ -14,10 +14,10 @@
 // 3x GREEN -> 3 green blinks indicates a successful connection to the server
 // 
 //CONFIGURATION:
-const char serveraddress[] = "tdh-scripts.herokuapp.com";
-const char* ssid = "MADhouse";         //WIFI to connect to
-const char* password = "1234554321";   //WIFI Password for SSID
-const char passcode[] = "1234567890";  // the passcode is looked up and verified by the server.  
+const char serveraddress[] = "*";
+const char* ssid = "*";         //WIFI to connect to
+const char* password = "*";   //WIFI Password for SSID
+const char passcode[] = "*";  // the passcode is looked up and verified by the server.  
 const int interval = 5;               // set interval in minutes to take readings
 String readString;
 
@@ -177,36 +177,30 @@ void setup()
   // Read all the lines of the reply from server and print them to Serial
   Serial.println("receiving from remote server");
   // not testing 'client.connected()' since we do not need to send data here
+
   
-  while (client.available()) {
-    char ch = static_cast<char>(client.read());
-    Serial.print(ch);
-  }
-  //Serial.print(readString);
-  /*
   while (client.available()) {
     char c = client.read();
     readString += String(c); 
   }
-  */
-  /*
-  Serial.println(readString);
+  Serial.print(readString);
+  
   if(readString.length()<1){
     Serial.println("Server did not respond");
+    blink(REDLED,10,100);
   }else{
     //Find if there was a code available
     int pos = readString.indexOf("CODE");
     String codeNo;
     if(pos>-1){
-      Serial.println("The index of \"CODE\" is " + String(pos));
-      codeNo = readString.substring(pos+5,pos+9);
+      codeNo = readString.substring(pos+5,pos+8);  //.substring(a,b) a => index to start at, b => index to end the substring before  5,8 is a string of 3. 5,6,7
       Serial.println("CODE value of "+codeNo);
       switch(codeNo.toInt()){
         case 1: //SUCCESS response from server
           blink(GREENLED,5,100);
           break;
         default:
-          blink(REDLED,2,100);
+          blink(REDLED,2,200);
           break;
       }
     }else{  //Could not find "CODE"  Likely did not get a response from the server.
@@ -214,7 +208,7 @@ void setup()
         blink(REDLED,10,100);
     }
   }
-  */
+  
   // if the server's disconnected, stop the client
   if (!client.connected()) {
     Serial.println();
